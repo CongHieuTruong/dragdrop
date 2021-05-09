@@ -16,6 +16,7 @@ class App extends Component {
     taskContent: '',
     editingTaskIndex: null,
     editedTaskId: null,
+    disabled: true,
     columns: _.cloneDeep([
       { id: 'td', title: 'TO DO', tasks: [] },
       { id: 'ip', title: 'IN PROGRESS', tasks: [] },
@@ -37,7 +38,10 @@ class App extends Component {
     }));
   };
 
-  handleChangeTaskContent = (e) => this.setState({ taskContent: e.target.value });
+  handleChangeTaskContent = (e) =>
+    this.setState({ taskContent: e.target.value }, () => {
+      this.setState({ disabled: _.isEmpty(this.state.taskContent) ? true : false });
+    });
 
   handleChangeeditingColumnIndex = (editingColumnIndex) => () => this.setState({ editingColumnIndex: editingColumnIndex });
 
@@ -174,6 +178,7 @@ class App extends Component {
         </DragDropContext>
         {displayModal && (
           <AddNewModal
+            disabled={this.state.disabled || _.isEmpty(taskContent)}
             editingColumnIndex={editingColumnIndex}
             taskContent={taskContent}
             handleChangeTaskContent={this.handleChangeTaskContent}

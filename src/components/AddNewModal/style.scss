@@ -42,6 +42,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    cursor: pointer;
   }
   &__task {
     margin: 7px 0 25px;
@@ -70,6 +71,11 @@
       background-color: #5680f9;
       color: #fff;
       border-color: #5680f9;
+    }
+    &--disable {
+      background-color: #c3cadd;
+      color: #fff;
+      border-color: #c3cadd;
     }
     &--cancel {
       background-color: #fff;
