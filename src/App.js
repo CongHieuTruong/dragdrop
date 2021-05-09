@@ -33,7 +33,7 @@ class App extends Component {
   handleToggleModal = (choosenColumn = '') => () => {
     this.setState((prevState) => ({
       displayModal: !prevState.displayModal,
-      editingColumnIndex: choosenColumn,
+      selectedColumn: choosenColumn,
     }));
   };
 
@@ -46,19 +46,19 @@ class App extends Component {
     if (taskContent.trim() === '') {
       toastr.warning('Please enter your task', 'Notice', { timeOut: 2000 });
     } else {
-      const { editingColumnIndex, columns } = this.state;
+      const { selectedColumn, columns } = this.state;
       const newTask = _.cloneDeep({
         id: uuidv1(),
         content: taskContent,
         time: new Date().toLocaleString(),
       });
-      const columnIndex = columns.findIndex((column) => _.get(column, 'id') === editingColumnIndex);
+      const columnIndex = columns.findIndex((column) => _.get(column, 'id') === selectedColumn);
       columns[columnIndex].tasks.push(newTask);
       const updatedColumn = _.cloneDeep(columns);
       this.setState(
         {
           displayModal: false,
-          editingColumnIndex: '',
+          selectedColumn: '',
           taskContent: '',
           columns: _.cloneDeep(updatedColumn),
         },
