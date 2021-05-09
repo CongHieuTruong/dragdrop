@@ -52,8 +52,9 @@ class App extends Component {
         content: taskContent,
         time: new Date().toLocaleString(),
       });
-      const columnIndex = columns.findIndex((column) => column.get('id') === editingColumnIndex);
-      const updatedColumn = columns.updateIn([columnIndex, 'tasks'], (tasks) => tasks.push(newTask));
+      const columnIndex = columns.findIndex((column) => _.get(column, 'id') === editingColumnIndex);
+      columns[columnIndex].tasks.push(newTask);
+      const updatedColumn = _.cloneDeep(columns);
       this.setState(
         {
           displayModal: false,
@@ -62,7 +63,7 @@ class App extends Component {
           columns: _.cloneDeep(updatedColumn),
         },
         () => {
-          localStorage.setItem('columns', JSON.stringify(updatedColumn.toJS()));
+          localStorage.setItem('columns', JSON.stringify(updatedColumn));
         }
       );
     }
@@ -72,9 +73,9 @@ class App extends Component {
     const result = window.confirm('Are you sure to delete this task?');
     if (result) {
       const { columns } = this.state;
-      const updatedColumn = columns.updateIn([columnIndex, 'tasks'], (tasks) => tasks.remove(taskIndex));
-      this.setState({ columns: _.cloneDeep(updatedColumn) }, () => {
-        localStorage.setItem('columns', JSON.stringify(updatedColumn.toJS()));
+      columns[columnIndex].tasks.splice(taskIndex, 1);
+      this.setState({ columns: _.cloneDeep(columns) }, () => {
+        localStorage.setItem('columns', JSON.stringify(_.cloneDeep(columns)));
         toastr.success('Delete task success', 'Notice', { timeOut: 2000 });
       });
     }
@@ -94,17 +95,17 @@ class App extends Component {
 
   handleEdit = () => {
     const { columns, editingColumnIndex, taskContent, editingTaskIndex } = this.state;
-    const updatedColumn = columns.updateIn([editingColumnIndex, 'tasks'], (tasks) => tasks.setIn([editingTaskIndex, 'content'], taskContent));
+    columns[editingColumnIndex].tasks[editingTaskIndex].content = taskContent;
     this.setState(
       {
         editingColumnIndex: '',
         taskContent: '',
         editedTaskId: null,
         editingTaskIndex: null,
-        columns: _.cloneDeep(updatedColumn),
+        columns: _.cloneDeep(columns),
       },
       () => {
-        localStorage.setItem('columns', JSON.stringify(updatedColumn.toJS()));
+        localStorage.setItem('columns', JSON.stringify(_.cloneDeep(columns)));
       }
     );
   };
@@ -122,17 +123,18 @@ class App extends Component {
     const { source, destination, reason } = result;
     if (reason === 'DROP' && destination) {
       const { columns } = this.state;
-      const sourceColumnIndex = columns.findIndex((column) => column.get('id') === source.droppableId);
-      const task = columns.getIn([sourceColumnIndex, 'tasks', source.index]);
-      let updatedColumn = columns.updateIn([sourceColumnIndex, 'tasks'], (tasks) => tasks.remove(source.index));
-      const destinationColumnIndex = columns.findIndex((column) => column.get('id') === destination.droppableId);
-      updatedColumn = updatedColumn.updateIn([destinationColumnIndex, 'tasks'], (tasks) => tasks.insert(destination.index, task));
+      const sourceColumnIndex = columns.findIndex((column) => _.get(column, 'id') === source.droppableId);
+      const task = _.get(columns, [sourceColumnIndex, 'tasks', source.index]);
+      columns[sourceColumnIndex].tasks.splice(source.index, 1);
+      let updatedColumn = _.cloneDeep(columns);
+      const destinationColumnIndex = columns.findIndex((column) => _.get(column, 'id') === destination.droppableId);
+      updatedColumn = _.update(updatedColumn, `updatedColumn[destinationColumnIndex].tasks`, () => updatedColumn[destinationColumnIndex].tasks.splice(destination.index, 0, task));
       this.setState(
         {
           columns: _.cloneDeep(updatedColumn),
         },
         () => {
-          localStorage.setItem('columns', JSON.stringify(updatedColumn.toJS()));
+          localStorage.setItem('columns', JSON.stringify(updatedColumn));
         }
       );
     }
