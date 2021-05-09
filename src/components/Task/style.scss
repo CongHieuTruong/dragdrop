@@ -1,0 +1,77 @@
+.Task {
+    width: 100%;
+    background-color: #fff;
+    box-shadow: 0 3px 7px 0 rgba(110, 142, 247, 0.13);
+    border: 1px solid #E1E2E8;
+    border-radius: 3px;
+    padding: 15px 10px;
+    box-sizing: border-box;
+    margin-bottom: 15px;
+    &__editing {
+        flex-grow: 2;
+        word-wrap: break-word;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        box-sizing: border-box;
+
+    }
+    &__editing-bgr {
+        position: fixed;
+        top: 0;
+        left: 0;
+        background-color: rgba(247, 248, 254, 0.5);
+        width: 100vw;
+        height: 100vh;
+    }
+    &__editor {
+        width: 100%;
+        margin-right: 5px;
+        text-indent: 2px;
+        font-size: 17px;
+        box-sizing: border-box;
+        z-index: 9;
+    }
+    &__editing-action {
+        display: flex;
+        z-index: 99;
+        i {
+            cursor: pointer;
+            color: #666666;
+            margin-left: 5px;
+            &:first-child {
+                color: #00DF82;
+            }
+        }
+    }
+    &__time {
+        font-size: 13px;
+        color: #666666;
+        margin-bottom: 10px;
+        i {
+            margin-right: 5px;
+        }
+    }
+    &__main {
+        display: flex;
+    }
+    &__content {
+        flex-grow: 2;
+        padding-right: 10px;
+        word-wrap: break-word;
+        font-size: 17px;
+    }
+    &__action {
+        display: flex;
+    }
+    &__btn {
+        margin: 0 5px;
+        cursor: pointer;
+        &:first-child {
+            color: #5680f9;
+        }
+        &:nth-child(2) {
+            color: #FF2F2F;
+        }
+    }
+}
