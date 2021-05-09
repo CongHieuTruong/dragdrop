@@ -70,15 +70,12 @@ class App extends Component {
   };
 
   handleDeleteTask = (columnIndex, taskIndex) => () => {
-    const result = window.confirm('Are you sure to delete this task?');
-    if (result) {
-      const { columns } = this.state;
-      columns[columnIndex].tasks.splice(taskIndex, 1);
-      this.setState({ columns: _.cloneDeep(columns) }, () => {
-        localStorage.setItem('columns', JSON.stringify(_.cloneDeep(columns)));
-        toastr.success('Delete task success', 'Notice', { timeOut: 2000 });
-      });
-    }
+    const { columns } = this.state;
+    columns[columnIndex].tasks.splice(taskIndex, 1);
+    this.setState({ columns: _.cloneDeep(columns) }, () => {
+      localStorage.setItem('columns', JSON.stringify(_.cloneDeep(columns)));
+      toastr.success('Delete task success', 'Notice', { timeOut: 2000 });
+    });
   };
 
   handleChooseEditTask = (columnIndex, taskIndex, taskId) => () => {
