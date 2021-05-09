@@ -2,13 +2,12 @@ import React, { Component } from 'react';
 import toastr from 'toastr';
 import 'toastr/build/toastr.min.css';
 import uuidv1 from 'uuid/v1';
-import { fromJS } from 'immutable';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
-
 import './style.scss';
 import Column from './components/Column/';
 import AddNewModal from './components/AddNewModal/';
 import Task from './components/Task/';
+import _ from 'lodash';
 
 class App extends Component {
   state = {
@@ -17,7 +16,7 @@ class App extends Component {
     taskContent: '',
     editingTaskIndex: null,
     editedTaskId: null,
-    columns: fromJS([
+    columns: _.cloneDeep([
       { id: 'td', title: 'TO DO', tasks: [] },
       { id: 'ip', title: 'IN PROGRESS', tasks: [] },
       { id: 'de', title: 'DONE', tasks: [] },
@@ -27,7 +26,7 @@ class App extends Component {
   componentDidMount() {
     const columns = localStorage.getItem('columns');
     if (columns) {
-      this.setState({ columns: fromJS(JSON.parse(columns)) });
+      this.setState({ columns: _.cloneDeep(JSON.parse(columns)) });
     }
   }
 
@@ -48,7 +47,7 @@ class App extends Component {
       toastr.warning('Please enter your task', 'Notice', { timeOut: 2000 });
     } else {
       const { editingColumnIndex, columns } = this.state;
-      const newTask = fromJS({
+      const newTask = _.cloneDeep({
         id: uuidv1(),
         content: taskContent,
         time: new Date().toLocaleString(),
@@ -60,7 +59,7 @@ class App extends Component {
           displayModal: false,
           editingColumnIndex: '',
           taskContent: '',
-          columns: fromJS(updatedColumn),
+          columns: _.cloneDeep(updatedColumn),
         },
         () => {
           localStorage.setItem('columns', JSON.stringify(updatedColumn.toJS()));
@@ -74,7 +73,7 @@ class App extends Component {
     if (result) {
       const { columns } = this.state;
       const updatedColumn = columns.updateIn([columnIndex, 'tasks'], (tasks) => tasks.remove(taskIndex));
-      this.setState({ columns: fromJS(updatedColumn) }, () => {
+      this.setState({ columns: _.cloneDeep(updatedColumn) }, () => {
         localStorage.setItem('columns', JSON.stringify(updatedColumn.toJS()));
         toastr.success('Delete task success', 'Notice', { timeOut: 2000 });
       });
@@ -102,7 +101,7 @@ class App extends Component {
         taskContent: '',
         editedTaskId: null,
         editingTaskIndex: null,
-        columns: fromJS(updatedColumn),
+        columns: _.cloneDeep(updatedColumn),
       },
       () => {
         localStorage.setItem('columns', JSON.stringify(updatedColumn.toJS()));
@@ -130,7 +129,7 @@ class App extends Component {
       updatedColumn = updatedColumn.updateIn([destinationColumnIndex, 'tasks'], (tasks) => tasks.insert(destination.index, task));
       this.setState(
         {
-          columns: fromJS(updatedColumn),
+          columns: _.cloneDeep(updatedColumn),
         },
         () => {
           localStorage.setItem('columns', JSON.stringify(updatedColumn.toJS()));
@@ -148,20 +147,20 @@ class App extends Component {
         <DragDropContext onDragEnd={this.handleSaveDrag}>
           <div className="App__content">
             {columns.map((column, columnIndex) => (
-              <Column key={column.get('id')} column={column} handleAddNewTask={this.handleToggleModal}>
-                <Droppable droppableId={column.get('id')}>
+              <Column key={_.get(column, 'id')} column={column} handleAddNewTask={this.handleToggleModal}>
+                <Droppable droppableId={_.get(column, 'id')}>
                   {(provided) => (
                     <div ref={provided.innerRef} {...provided.droppableProps} style={{ minHeight: '300px' }}>
-                      {column.get('tasks').map((task, taskIndex) => (
+                      {_.get(column, 'tasks').map((task, taskIndex) => (
                         <Task
-                          key={task.get('id')}
+                          key={_.get(task, 'id')}
                           index={taskIndex}
-                          isEditing={task.get('id') === editedTaskId}
+                          isEditing={_.get(task, 'id') === editedTaskId}
                           handleChangeTaskContent={this.handleChangeTaskContent}
                           task={task}
                           handleEdit={this.handleEdit}
                           handleCancelEdit={this.handleCancelEdit}
-                          handleChooseEditTask={this.handleChooseEditTask(columnIndex, taskIndex, task.get('id'))}
+                          handleChooseEditTask={this.handleChooseEditTask(columnIndex, taskIndex, _.get(task, 'id'))}
                           handleDeleteTask={this.handleDeleteTask(columnIndex, taskIndex)}
                         />
                       ))}
