@@ -4,9 +4,9 @@ import 'toastr/build/toastr.min.css';
 import uuidv1 from 'uuid/v1';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import './style.scss';
-import Column from './components/Column/';
-import AddNewModal from './components/AddNewModal/';
-import Task from './components/Task/';
+import Column from './components/Column/column';
+import AddNewModal from './components/AddNewModal/addNewModal';
+import Task from './components/Task/task';
 import _ from 'lodash';
 
 class App extends Component {
