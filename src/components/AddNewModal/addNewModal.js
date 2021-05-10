@@ -28,7 +28,7 @@ const AddNewModal = (props) => (
         <button disabled={props.disabled} className={`AddNewModal__btn AddNewModal__btn--${props.disabled ? 'disable' : 'confirm'}`} onClick={props.handleAddNewTask}>
           Save
         </button>
-        <button className="AddNewModal__btn AddNewModal__btn--cancel" onClick={props.handleToggleModal}>
+        <button className="AddNewModal__btn AddNewModal__btn--cancel" onClick={props.handleToggleModal()}>
           Cancel
         </button>
       </div>

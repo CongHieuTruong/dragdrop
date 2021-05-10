@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import toastr from 'toastr';
 import 'toastr/build/toastr.min.css';
 import uuidv1 from 'uuid/v1';
@@ -37,9 +37,12 @@ function App() {
     setSelectedColumn(choosenColumn);
   };
 
-  const handleChangeTaskContent = (e) => {
-    setTaskContent(e.target.value);
+  useEffect(() => {
     setDisabled(_.isEmpty(taskContent) ? true : false);
+  }, [taskContent]);
+
+  const handleChangeTaskContent = (event) => {
+    setTaskContent(event.target.value);
   };
 
   const handleChangeeditingColumnIndex = (editingColumnIndex) => () => setEditingColumnIndex(editingColumnIndex);
@@ -135,7 +138,6 @@ function App() {
                         handleDeleteTask={handleDeleteTask(columnIndex, taskIndex)}
                       />
                     ))}
-
                     {provided.placeholder}
                   </div>
                 )}
