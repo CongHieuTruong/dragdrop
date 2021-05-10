@@ -1,89 +1,147 @@
-.Task {
-  width: 100%;
-  background-color: #fff;
-  box-shadow: 0 3px 7px 0 rgba(110, 142, 247, 0.13);
-  border: 1px solid #e1e2e8;
-  border-radius: 3px;
-  padding: 15px 10px;
-  box-sizing: border-box;
+.wrapper-task {
+  width: 320px;
+  position: relative;
+  overflow: hidden;
   margin-bottom: 15px;
-  &__editing {
-    flex-grow: 2;
-    word-wrap: break-word;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    box-sizing: border-box;
+  .animate {
+    position: absolute;
+    display: block;
   }
-  &__editing-bgr {
-    position: fixed;
+  .animate:nth-child(1) {
     top: 0;
-    left: 0;
-    background-color: rgba(247, 248, 254, 0.5);
-    width: 100vw;
-    height: 100vh;
-  }
-  &__editor {
+    left: -100%;
     width: 100%;
-    margin-right: 5px;
-    text-indent: 2px;
-    font-size: 17px;
-    box-sizing: border-box;
-    z-index: 9;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #2196f3);
   }
-  &__editing-action {
-    display: flex;
-    z-index: 99;
-    i {
-      cursor: pointer;
-      color: #666666;
-      margin-left: 5px;
-      &:first-child {
-        color: #00df82;
+
+  &:hover .animate:nth-child(1) {
+    left: 100%;
+    transition: 0.5s;
+  }
+
+  .animate:nth-child(2) {
+    top: -100%;
+    right: 0;
+    width: 2px;
+    height: 100%;
+    background: linear-gradient(180deg, transparent, #2196f3);
+  }
+  &:hover .animate:nth-child(2) {
+    top: 100%;
+    transition: 0.25s;
+    transition-delay: 0.45s;
+  }
+
+  .animate:nth-child(3) {
+    bottom: 0;
+    right: -100%;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(270deg, transparent, #2196f3);
+  }
+  &:hover .animate:nth-child(3) {
+    right: 100%;
+    transition: 0.5s;
+    transition-delay: 0.65s;
+  }
+
+  .animate:nth-child(4) {
+    bottom: -100%;
+    left: 0;
+    width: 2px;
+    height: 100%;
+    background: linear-gradient(360deg, transparent, #2196f3);
+  }
+  &:hover .animate:nth-child(4) {
+    bottom: 100%;
+    transition: 0.25s;
+    transition-delay: 1.1s;
+  }
+  .Task {
+    width: 100%;
+    background-color: #fff;
+    box-shadow: 0 3px 7px 0 rgba(110, 142, 247, 0.13);
+    border: 1px solid #e1e2e8;
+    border-radius: 3px;
+    padding: 15px 10px;
+    box-sizing: border-box;
+    &__editing {
+      flex-grow: 2;
+      word-wrap: break-word;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-sizing: border-box;
+    }
+    &__editing-bgr {
+      position: fixed;
+      top: 0;
+      left: 0;
+      background-color: rgba(247, 248, 254, 0.5);
+      width: 100vw;
+      height: 100vh;
+    }
+    &__editor {
+      width: 100%;
+      margin-right: 5px;
+      text-indent: 2px;
+      font-size: 17px;
+      box-sizing: border-box;
+      z-index: 9;
+    }
+    &__editing-action {
+      display: flex;
+      z-index: 99;
+      i {
+        cursor: pointer;
+        color: #666666;
+        margin-left: 5px;
+        &:first-child {
+          color: #00df82;
+        }
       }
     }
-  }
-  &__time {
-    font-size: 13px;
-    color: #666666;
-    margin-bottom: 10px;
-    i {
-      margin-right: 5px;
+    &__time {
+      font-size: 13px;
+      color: #666666;
+      margin-bottom: 10px;
+      i {
+        margin-right: 5px;
+      }
     }
-  }
-  &__main {
-    display: flex;
-  }
-  &__content {
-    flex-grow: 2;
-    padding-right: 10px;
-    word-wrap: break-word;
-    font-size: 17px;
-  }
-  &__action {
-    display: flex;
-  }
-  &__btn {
-    margin: 0 5px;
-    cursor: pointer;
-    &:first-child {
-      color: #5680f9;
+    &__main {
+      display: flex;
     }
-    &:nth-child(2) {
-      color: #ff2f2f;
+    &__content {
+      flex-grow: 2;
+      padding-right: 10px;
+      word-wrap: break-word;
+      font-size: 17px;
     }
-  }
-  animation-name: amimation;
-  animation-duration: 1.5s;
-  @keyframes amimation {
-    from {
-      //   background-color: red;
-      margin-left: 5%;
-      opacity: 0;
+    &__action {
+      display: flex;
     }
-    to {
-      //   background-color: yellow;
-      opacity: 1;
+    &__btn {
+      margin: 0 5px;
+      cursor: pointer;
+      &:first-child {
+        color: #5680f9;
+      }
+      &:nth-child(2) {
+        color: #ff2f2f;
+      }
+    }
+    animation-name: amimation;
+    animation-duration: 1.5s;
+    @keyframes amimation {
+      from {
+        margin-left: 5%;
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
     }
   }
 }
