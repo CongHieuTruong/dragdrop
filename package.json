@@ -2,7 +2,9 @@
   "name": "to-do-list",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://hieutruong.tk/",
   "dependencies": {
+    "gh-pages": "^3.2.2",
     "immutable": "^4.0.0-rc.12",
     "lodash": "^4.17.21",
     "node-sass": "^4.11.0",
