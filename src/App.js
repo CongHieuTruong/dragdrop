@@ -1,13 +1,13 @@
-import React, { Component } from 'react';
-import toastr from 'toastr';
-import 'toastr/build/toastr.min.css';
-import uuidv1 from 'uuid/v1';
-import { DragDropContext, Droppable } from 'react-beautiful-dnd';
-import './style.scss';
-import Column from './components/Column/';
-import AddNewModal from './components/AddNewModal/';
-import Task from './components/Task/';
-import _ from 'lodash';
+import React, { Component } from 'react'
+import toastr from 'toastr'
+import 'toastr/build/toastr.min.css'
+import uuidv1 from 'uuid/v1'
+import { DragDropContext, Droppable } from 'react-beautiful-dnd'
+import './style.scss'
+import Column from './components/Column/'
+import AddNewModal from './components/AddNewModal/'
+import Task from './components/Task/'
+import _ from 'lodash'
 
 class App extends Component {
   state = {
@@ -22,43 +22,46 @@ class App extends Component {
       { id: 'ip', title: 'IN PROGRESS', tasks: [] },
       { id: 'de', title: 'DONE', tasks: [] },
     ]),
-  };
+  }
 
   componentDidMount() {
-    const columns = localStorage.getItem('columns');
+    const columns = localStorage.getItem('columns')
     if (columns) {
-      this.setState({ columns: _.cloneDeep(JSON.parse(columns)) });
+      this.setState({ columns: _.cloneDeep(JSON.parse(columns)) })
     }
   }
 
-  handleToggleModal = (choosenColumn = '') => () => {
-    this.setState((prevState) => ({
-      displayModal: !prevState.displayModal,
-      selectedColumn: choosenColumn,
-    }));
-  };
+  handleToggleModal =
+    (choosenColumn = '') =>
+    () => {
+      this.setState((prevState) => ({
+        displayModal: !prevState.displayModal,
+        selectedColumn: choosenColumn,
+      }))
+    }
 
   handleChangeTaskContent = (e) =>
     this.setState({ taskContent: e.target.value }, () => {
-      this.setState({ disabled: _.isEmpty(this.state.taskContent) ? true : false });
-    });
+      this.setState({ disabled: _.isEmpty(this.state.taskContent) ? true : false })
+    })
 
-  handleChangeeditingColumnIndex = (editingColumnIndex) => () => this.setState({ editingColumnIndex: editingColumnIndex });
+  handleChangeEditingColumnIndex = (editingColumnIndex) => () =>
+    this.setState({ editingColumnIndex: editingColumnIndex })
 
   handleAddNewTask = () => {
-    const { taskContent } = this.state;
+    const { taskContent } = this.state
     if (taskContent.trim() === '') {
-      toastr.warning('Please enter your task', 'Notice', { timeOut: 2000 });
+      toastr.warning('Please enter your task', 'Notice', { timeOut: 2000 })
     } else {
-      const { selectedColumn, columns } = this.state;
+      const { selectedColumn, columns } = this.state
       const newTask = _.cloneDeep({
         id: uuidv1(),
         content: taskContent,
         time: new Date().toLocaleString(),
-      });
-      const columnIndex = columns.findIndex((column) => _.get(column, 'id') === selectedColumn);
-      columns[columnIndex].tasks.push(newTask);
-      const updatedColumn = _.cloneDeep(columns);
+      })
+      const columnIndex = columns.findIndex((column) => _.get(column, 'id') === selectedColumn)
+      columns[columnIndex].tasks.push(newTask)
+      const updatedColumn = _.cloneDeep(columns)
       this.setState(
         {
           displayModal: false,
@@ -67,36 +70,36 @@ class App extends Component {
           columns: _.cloneDeep(updatedColumn),
         },
         () => {
-          localStorage.setItem('columns', JSON.stringify(updatedColumn));
+          localStorage.setItem('columns', JSON.stringify(updatedColumn))
         }
-      );
+      )
     }
-  };
+  }
 
   handleDeleteTask = (columnIndex, taskIndex) => () => {
-    const { columns } = this.state;
-    columns[columnIndex].tasks.splice(taskIndex, 1);
+    const { columns } = this.state
+    columns[columnIndex].tasks.splice(taskIndex, 1)
     this.setState({ columns: _.cloneDeep(columns) }, () => {
-      localStorage.setItem('columns', JSON.stringify(_.cloneDeep(columns)));
-      toastr.success('Delete task success', 'Notice', { timeOut: 2000 });
-    });
-  };
+      localStorage.setItem('columns', JSON.stringify(_.cloneDeep(columns)))
+      toastr.success('Delete task success', 'Notice', { timeOut: 2000 })
+    })
+  }
 
   handleChooseEditTask = (columnIndex, taskIndex, taskId) => () => {
     this.setState({
       editingColumnIndex: columnIndex,
       editingTaskIndex: taskIndex,
       editedTaskId: taskId,
-    });
-  };
+    })
+  }
 
   handleChangeSelectedColumn = (selectedColumn) => () => {
-    this.setState({ selectedColumn: selectedColumn });
-  };
+    this.setState({ selectedColumn: selectedColumn })
+  }
 
   handleEdit = () => {
-    const { columns, editingColumnIndex, taskContent, editingTaskIndex } = this.state;
-    columns[editingColumnIndex].tasks[editingTaskIndex].content = taskContent;
+    const { columns, editingColumnIndex, taskContent, editingTaskIndex } = this.state
+    columns[editingColumnIndex].tasks[editingTaskIndex].content = taskContent
     this.setState(
       {
         editingColumnIndex: '',
@@ -106,10 +109,10 @@ class App extends Component {
         columns: _.cloneDeep(columns),
       },
       () => {
-        localStorage.setItem('columns', JSON.stringify(_.cloneDeep(columns)));
+        localStorage.setItem('columns', JSON.stringify(_.cloneDeep(columns)))
       }
-    );
-  };
+    )
+  }
 
   handleCancelEdit = () => {
     this.setState({
@@ -117,43 +120,57 @@ class App extends Component {
       taskContent: '',
       editedTaskId: null,
       editingTaskIndex: null,
-    });
-  };
+    })
+  }
 
   handleSaveDrag = (result) => {
-    const { source, destination, reason } = result;
+    const { source, destination, reason } = result
     if (reason === 'DROP' && destination) {
-      const { columns } = this.state;
-      const sourceColumnIndex = columns.findIndex((column) => _.get(column, 'id') === source.droppableId);
-      const task = _.get(columns, [sourceColumnIndex, 'tasks', source.index]);
-      columns[sourceColumnIndex].tasks.splice(source.index, 1);
-      let updatedColumn = _.cloneDeep(columns);
-      const destinationColumnIndex = columns.findIndex((column) => _.get(column, 'id') === destination.droppableId);
-      updatedColumn = _.update(updatedColumn, `updatedColumn[destinationColumnIndex].tasks`, () => updatedColumn[destinationColumnIndex].tasks.splice(destination.index, 0, task));
+      const { columns } = this.state
+      const sourceColumnIndex = columns.findIndex(
+        (column) => _.get(column, 'id') === source.droppableId
+      )
+      const task = _.get(columns, [sourceColumnIndex, 'tasks', source.index])
+      columns[sourceColumnIndex].tasks.splice(source.index, 1)
+      let updatedColumn = _.cloneDeep(columns)
+      const destinationColumnIndex = columns.findIndex(
+        (column) => _.get(column, 'id') === destination.droppableId
+      )
+      updatedColumn = _.update(updatedColumn, `updatedColumn[destinationColumnIndex].tasks`, () =>
+        updatedColumn[destinationColumnIndex].tasks.splice(destination.index, 0, task)
+      )
       this.setState(
         {
           columns: _.cloneDeep(updatedColumn),
         },
         () => {
-          localStorage.setItem('columns', JSON.stringify(updatedColumn));
+          localStorage.setItem('columns', JSON.stringify(updatedColumn))
         }
-      );
+      )
     }
-  };
+  }
 
   render() {
-    const { columns, displayModal, editingColumnIndex, taskContent, editedTaskId } = this.state;
+    const { columns, displayModal, editingColumnIndex, taskContent, editedTaskId } = this.state
 
     return (
-      <div className="App">
-        <h1 className="App__title">TO DO LIST</h1>
+      <div className='App'>
+        <h1 className='App__title'>TO DO LIST</h1>
         <DragDropContext onDragEnd={this.handleSaveDrag}>
-          <div className="App__content">
+          <div className='App__content'>
             {columns.map((column, columnIndex) => (
-              <Column key={_.get(column, 'id')} column={column} handleAddNewTask={this.handleToggleModal}>
+              <Column
+                key={_.get(column, 'id')}
+                column={column}
+                handleAddNewTask={this.handleToggleModal}
+              >
                 <Droppable droppableId={_.get(column, 'id')}>
                   {(provided) => (
-                    <div ref={provided.innerRef} {...provided.droppableProps} style={{ minHeight: '300px' }}>
+                    <div
+                      ref={provided.innerRef}
+                      {...provided.droppableProps}
+                      style={{ minHeight: '300px' }}
+                    >
                       {_.get(column, 'tasks').map((task, taskIndex) => (
                         <Task
                           key={_.get(task, 'id')}
@@ -163,7 +180,11 @@ class App extends Component {
                           task={task}
                           handleEdit={this.handleEdit}
                           handleCancelEdit={this.handleCancelEdit}
-                          handleChooseEditTask={this.handleChooseEditTask(columnIndex, taskIndex, _.get(task, 'id'))}
+                          handleChooseEditTask={this.handleChooseEditTask(
+                            columnIndex,
+                            taskIndex,
+                            _.get(task, 'id')
+                          )}
                           handleDeleteTask={this.handleDeleteTask(columnIndex, taskIndex)}
                         />
                       ))}
@@ -182,7 +203,7 @@ class App extends Component {
             editingColumnIndex={editingColumnIndex}
             taskContent={taskContent}
             handleChangeTaskContent={this.handleChangeTaskContent}
-            handleChangeeditingColumnIndex={this.handleChangeeditingColumnIndex}
+            handleChangeEditingColumnIndex={this.handleChangeEditingColumnIndex}
             handleAddNewTask={this.handleAddNewTask}
             handleToggleModal={this.handleToggleModal()}
             selectedColumn={this.state.selectedColumn}
@@ -190,8 +211,8 @@ class App extends Component {
           />
         )}
       </div>
-    );
+    )
   }
 }
 
-export default App;
+export default App
